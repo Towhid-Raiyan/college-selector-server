@@ -68,6 +68,7 @@ async function run() {
     const usersCollection = client.db("collegeSelectorDb").collection("users");
     const collegeCollection = client.db("collegeSelectorDb").collection("college");
     const studentCollection = client.db("collegeSelectorDb").collection("students");
+    const reviewCollection = client.db("collegeSelectorDb").collection("reviews");
 
     // jwt
     app.post("/jwt", async (req, res) => {
@@ -107,7 +108,6 @@ async function run() {
 
     //get all college
     app.get("/allCollege", async (req, res) => {
-
       const allCollege = await collegeCollection.find().toArray();
       res.send(allCollege);
     });
@@ -132,6 +132,38 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await collegeCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+    });
+    //get a college
+    // app.get('/college', async (req, res) => {
+    //   let query = {};
+    //   if (req.query.college_name) {
+    //     query = { name: req.query.college_name };
+    //   }
+    //   const cursor = collegeCollection.find(query);
+    //   const college_name = await cursor.toArray();
+    //   res.send(college_name);
+    // })
+    // get a student
+    app.get("/student/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: new ObjectId(email) };
+      const result = await studentCollection.findOne(query);
+      
+      res.send(result);
+    });
+
+    //get all reviews
+    app.get("/reviews", async (req, res) => {
+      const allReview = await reviewCollection.find().toArray();
+      res.send(allReview);
+    });
+
+    // add a review in database
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
